@@ -64,8 +64,8 @@ Several status values are provided as constants on the _Payload_ object:
 - `Payload::FAILURE`: There was a generic failure of some sort.
 - `Payload::FOUND`: A query successfullly returned results.
 - `Payload::NOT_ACCEPTED`: A command failed to be accepted.
-- `Payload::NOT_AUTHENTICATED`: An authentication attempt failed.
-- `Payload::NOT_AUTHORIZED`: An authorization attempt failed.
+- `Payload::NOT_AUTHENTICATED`: The user is not authenticated.
+- `Payload::NOT_AUTHORIZED`: The user is not authorized for the action.
 - `Payload::NOT_CREATED`: A creation attempt failed.
 - `Payload::NOT_DELETED`: A deletion attempt failed.
 - `Payload::NOT_FOUND`: A query failed to return results.
