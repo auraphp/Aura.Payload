@@ -139,12 +139,12 @@ class ApplicationService
             $posts = $this->mapper->fetchAllByPage($page, $perPage);
             if (! $posts) {
                 return $this->payload
-                    ->setStatus($this->payload::NOT_FOUND)
+                    ->setStatus(Payload::NOT_FOUND)
                     ->setInput(func_get_args());
             }
 
             return $this->payload
-                ->setStatus($this->payload::FOUND)
+                ->setStatus(Payload::FOUND)
                 ->setOutput($posts);
 
         } catch (Exception $e) {
@@ -159,12 +159,12 @@ class ApplicationService
             $post = $this->mapper->fetchOneById($id);
             if (! $post) {
                 return $this->payload
-                    ->setStatus($this->payload::NOT_FOUND)
+                    ->setStatus(Payload::NOT_FOUND)
                     ->setInput(func_get_args());
             }
 
             return $this->payload
-                ->setStatus($this->payload::FOUND)
+                ->setStatus(Payload::FOUND)
                 ->setOutput($post);
 
         } catch (Exception $e) {
@@ -179,20 +179,20 @@ class ApplicationService
             $post = $this->mapper->fetchOneById($id);
             if (! $post) {
                 return $this->payload
-                    ->setStatus($this->payload::NOT_FOUND)
+                    ->setStatus(Payload::NOT_FOUND)
                     ->setInput(func_get_args());
             }
 
             if (! $post->isOwnedBy($user)) {
                 return $this->payload
-                    ->setStatus($this->payload::NOT_AUTHORIZED)
+                    ->setStatus(Payload::NOT_AUTHORIZED)
                     ->setInput(func_get_args());
             }
 
             $post->setData($input);
             if (! $this->filter->forUpdate($post)) {
                 return $this->payload
-                    ->setStatus($this->payload::NOT_VALID)
+                    ->setStatus(Payload::NOT_VALID)
                     ->setInput($input)
                     ->setOutput($post)
                     ->setExtras($this->filter->getMessages());
@@ -200,7 +200,7 @@ class ApplicationService
 
             $this->mapper->update($post);
             return $this->payload
-                ->setStatus($this->payload::UPDATED)
+                ->setStatus(Payload::UPDATED)
                 ->setOutput($post);
 
         } catch (Exception $e) {
@@ -215,7 +215,7 @@ class ApplicationService
             $post = $this->mapper->newPost($input);
             if (! $this->filter->forInsert($post)) {
                 return $this->payload
-                    ->setStatus($this->payload::NOT_VALID)
+                    ->setStatus(Payload::NOT_VALID)
                     ->setInput($input)
                     ->setOutput($post)
                     ->setExtras($this->filter->getMessages());
@@ -223,7 +223,7 @@ class ApplicationService
 
             $this->mapper->create($post);
             return $this->payload
-                ->setStatus($this->payload::CREATED)
+                ->setStatus(Payload::CREATED)
                 ->setOutput($post);
 
         } catch (Exception $e) {
@@ -238,19 +238,19 @@ class ApplicationService
             $post = $this->mapper->fetchOneById($id);
             if (! $post) {
                 return $this->payload
-                    ->setStatus($this->payload::NOT_FOUND)
+                    ->setStatus(Payload::NOT_FOUND)
                     ->setInput(func_get_args());
             }
 
             if (! $post->isOwnedBy($user)) {
                 return $this->payload
-                    ->setStatus($this->payload::NOT_AUTHORIZED)
+                    ->setStatus(Payload::NOT_AUTHORIZED)
                     ->setInput(func_get_args());
             }
 
             $this->mapper->delete($post);
             return $this->payload
-                ->setStatus($this->payload::DELETED)
+                ->setStatus(Payload::DELETED)
                 ->setOutput($post);
 
         } catch (Exception $e) {
@@ -261,7 +261,7 @@ class ApplicationService
     protected function error(Exception $e, array $args)
     {
         return $this->payload
-            ->setStatus($this->payload::ERROR)
+            ->setStatus(Payload::ERROR)
             ->setInput($args)
             ->setOutput($e)
             ->setCode($e->getCode())
