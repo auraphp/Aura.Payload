@@ -1,0 +1,32 @@
+{
+    "name": "aura/payload",
+    "type": "library",
+    "description": "A Domain Payload implementation.",
+    "keywords": [
+        "domain",
+        "payload",
+        "ddd"
+    ],
+    "homepage": "https://github.com/auraphp/Aura.Payload",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aura.Payload Contributors",
+            "homepage": "https://github.com/auraphp/Aura.Payload/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "aura/payload-interface": "3.x-dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Aura\\Payload\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aura\\Payload\\": "tests/"
+        }
+    }
+}
