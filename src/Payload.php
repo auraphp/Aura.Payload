@@ -29,8 +29,7 @@ class Payload implements PayloadInterface
     protected $status;
     protected $input;
     protected $output;
-    protected $code;
-    protected $message;
+    protected $messages;
     protected $extras;
 
     public function setStatus($status)
@@ -66,26 +65,15 @@ class Payload implements PayloadInterface
         return $this->output;
     }
 
-    public function setCode($code)
+    public function setMessages($messages)
     {
-        $this->code = $code;
+        $this->messages = $messages;
         return $this;
     }
 
-    public function getCode()
+    public function getMessages()
     {
-        return $this->code;
-    }
-
-    public function setMessage($message)
-    {
-        $this->message = $message;
-        return $this;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
+        return $this->messages;
     }
 
     public function setExtras($extras)
