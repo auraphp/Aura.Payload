@@ -195,7 +195,7 @@ class ApplicationService
                     ->setStatus(Payload::NOT_VALID)
                     ->setInput($input)
                     ->setOutput($post)
-                    ->setExtras($this->filter->getMessages());
+                    ->setMessages($this->filter->getMessages());
             }
 
             $this->mapper->update($post);
@@ -218,7 +218,7 @@ class ApplicationService
                     ->setStatus(Payload::NOT_VALID)
                     ->setInput($input)
                     ->setOutput($post)
-                    ->setExtras($this->filter->getMessages());
+                    ->setMessages($this->filter->getMessages());
             }
 
             $this->mapper->create($post);
@@ -263,9 +263,7 @@ class ApplicationService
         return $this->payload
             ->setStatus(Payload::ERROR)
             ->setInput($args)
-            ->setOutput($e)
-            ->setCode($e->getCode())
-            ->setMessage($e->getMessage());
+            ->setOutput($e);
     }
 }
 ?>
