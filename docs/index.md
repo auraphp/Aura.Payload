@@ -30,9 +30,7 @@ fluently.)
 
 - `setOutput()`: Sets the output produced by the domain layer.
 
-- `setCode()`: Sets an error or status code reported by the domain layer.
-
-- `setMessage()`: Sets an error or status message reported by the domain layer.
+- `setMessages()`: Sets the messages reported by the domain layer.
 
 - `setExtras()`: Sets "extra" values produced by the domain layer.
 
@@ -45,9 +43,7 @@ complements to the the `set*()` methods.
 
 - `getOutput()`: Gets the output produced by the domain layer.
 
-- `getCode()`: Gets an error or status code reported by the domain layer.
-
-- `getMessage()`: Gets an error or status message reported by the domain layer.
+- `getMessages()`: Gets the messages reported by the domain layer.
 
 - `getExtras()`: Gets "extra" values produced by the domain layer.
 
