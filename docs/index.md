@@ -10,6 +10,8 @@ Instantiating a _Payload_ object is straighforward:
 
 ```php
 <?php
+use Aura\Payload\Payload;
+
 $payload = new Payload();
 ?>
 ```
