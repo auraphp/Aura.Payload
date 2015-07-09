@@ -20,6 +20,19 @@ You can then set the payload status and domain output, along with error codes,
 error messages, the input as received by the domain layer, and any extras you
 like.
 
+While this may suffice for your particular implementation, there is also a
+factory object to allow each call to return its own payload.
+
+```php
+<?php
+use Aura\Payload\PayloadFactory;
+
+$payloadFactory = new PayloadFactory();
+$payload = $payloadFactory->newInstance();
+?>
+```
+
+
 ## Methods
 
 Use these methods in your domain layer to modify the _Payload_. (All `set*()`
@@ -108,7 +121,7 @@ present the information from the domain.
 <?php
 namespace App\Blog;
 
-use Aura\Payload\Payload;
+use Aura\Payload\PayloadFactory;
 use Exception;
 
 class ApplicationService
@@ -116,32 +129,34 @@ class ApplicationService
     protected $user;
     protected $mapper;
     protected $filter;
-    protected $payload;
+    protected $payloadFactory;
 
     public function __construct(
         User $user,
         BlogMapper $mapper,
         BlogFilter $filter,
-        Payload $payload
+        PayloadFactory $payloadFactory
     ) {
         $this->user = $user;
         $this->mapper = $mapper;
         $this->filter = $filter;
-        $this->payload = $payload;
+        $this->payloadFactory = $payloadFactory;
     }
 
     public function browsePosts($page = 1, $perPage = 10)
     {
+        $payload = $this->payloadFactory->newInstance();
+
         try {
 
             $posts = $this->mapper->fetchAllByPage($page, $perPage);
             if (! $posts) {
-                return $this->payload
+                return $payload
                     ->setStatus(Payload::NOT_FOUND)
                     ->setInput(func_get_args());
             }
 
-            return $this->payload
+            return $payload
                 ->setStatus(Payload::FOUND)
                 ->setOutput($posts);
 
@@ -152,16 +167,18 @@ class ApplicationService
 
     public function readPost($id)
     {
+        $payload = $this->payloadFactory->newInstance();
+
         try {
 
             $post = $this->mapper->fetchOneById($id);
             if (! $post) {
-                return $this->payload
+                return $payload
                     ->setStatus(Payload::NOT_FOUND)
                     ->setInput(func_get_args());
             }
 
-            return $this->payload
+            return $payload
                 ->setStatus(Payload::FOUND)
                 ->setOutput($post);
 
@@ -172,24 +189,26 @@ class ApplicationService
 
     public function editPost($id, array $input)
     {
+        $payload = $this->payloadFactory->newInstance();
+
         try {
 
             $post = $this->mapper->fetchOneById($id);
             if (! $post) {
-                return $this->payload
+                return $payload
                     ->setStatus(Payload::NOT_FOUND)
                     ->setInput(func_get_args());
             }
 
             if (! $post->isOwnedBy($user)) {
-                return $this->payload
+                return $payload
                     ->setStatus(Payload::NOT_AUTHORIZED)
                     ->setInput(func_get_args());
             }
 
             $post->setData($input);
             if (! $this->filter->forUpdate($post)) {
-                return $this->payload
+                return $payload
                     ->setStatus(Payload::NOT_VALID)
                     ->setInput($input)
                     ->setOutput($post)
@@ -197,7 +216,7 @@ class ApplicationService
             }
 
             $this->mapper->update($post);
-            return $this->payload
+            return $payload
                 ->setStatus(Payload::UPDATED)
                 ->setOutput($post);
 
@@ -208,11 +227,13 @@ class ApplicationService
 
     public function addPost(array $input)
     {
+        $payload = $this->payloadFactory->newInstance();
+
         try {
 
             $post = $this->mapper->newPost($input);
             if (! $this->filter->forInsert($post)) {
-                return $this->payload
+                return $payload
                     ->setStatus(Payload::NOT_VALID)
                     ->setInput($input)
                     ->setOutput($post)
@@ -220,7 +241,7 @@ class ApplicationService
             }
 
             $this->mapper->create($post);
-            return $this->payload
+            return $payload
                 ->setStatus(Payload::CREATED)
                 ->setOutput($post);
 
@@ -231,23 +252,25 @@ class ApplicationService
 
     public function deletePost($id)
     {
+        $payload = $this->payloadFactory->newInstance();
+
         try {
 
             $post = $this->mapper->fetchOneById($id);
             if (! $post) {
-                return $this->payload
+                return $payload
                     ->setStatus(Payload::NOT_FOUND)
                     ->setInput(func_get_args());
             }
 
             if (! $post->isOwnedBy($user)) {
-                return $this->payload
+                return $payload
                     ->setStatus(Payload::NOT_AUTHORIZED)
                     ->setInput(func_get_args());
             }
 
             $this->mapper->delete($post);
-            return $this->payload
+            return $payload
                 ->setStatus(Payload::DELETED)
                 ->setOutput($post);
 
@@ -258,7 +281,8 @@ class ApplicationService
 
     protected function error(Exception $e, array $args)
     {
-        return $this->payload
+        $payload = $this->payloadFactory->newInstance();
+        return $payload
             ->setStatus(Payload::ERROR)
             ->setInput($args)
             ->setOutput($e);
