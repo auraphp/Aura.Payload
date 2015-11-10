@@ -20,6 +20,19 @@ You can then set the payload status and domain output, along with error codes,
 error messages, the input as received by the domain layer, and any extras you
 like.
 
+While this may suffice for your particular implementation, there is also a
+factory object to allow each call to return its own payload.
+
+```php
+<?php
+use Aura\Payload\PayloadFactory;
+
+$payloadFactory = new PayloadFactory();
+$payload = $payloadFactory->newInstance();
+?>
+```
+
+
 ## Methods
 
 Use these methods in your domain layer to modify the _Payload_. (All `set*()`
@@ -39,7 +52,7 @@ fluently.)
 Your calling code can then examine the payload object using the `get*()`
 complements to the the `set*()` methods.
 
-- `setStatus()`: Gets the payload status in terms of the domain layer.
+- `getStatus()`: Gets the payload status in terms of the domain layer.
 
 - `getInput()`: Gets the input as received by the domain layer.
 
@@ -51,28 +64,28 @@ complements to the the `set*()` methods.
 
 ## Status Values
 
-Several status values are provided as constants on the _Payload_ object:
+Several status values are available as constants on the _Aura\Payload_Interface\PayloadStatus_ class:
 
-- `Payload::ACCEPTED`: A command has been accepted for later processing.
-- `Payload::AUTHENTICATED`: An authentication attempt succeeded.
-- `Payload::AUTHORIZED`: An authorization request succeeded.
-- `Payload::CREATED`: A creation attempt succeeded.
-- `Payload::DELETED`: A deletion attempt succeeded.
-- `Payload::ERROR`: There was a major error of some sort.
-- `Payload::FAILURE`: There was a generic failure of some sort.
-- `Payload::FOUND`: A query successfullly returned results.
-- `Payload::NOT_ACCEPTED`: A command failed to be accepted.
-- `Payload::NOT_AUTHENTICATED`: The user is not authenticated.
-- `Payload::NOT_AUTHORIZED`: The user is not authorized for the action.
-- `Payload::NOT_CREATED`: A creation attempt failed.
-- `Payload::NOT_DELETED`: A deletion attempt failed.
-- `Payload::NOT_FOUND`: A query failed to return results.
-- `Payload::NOT_UPDATED`: An update attempt failed.
-- `Payload::NOT_VALID`: User input was invalid.
-- `Payload::PROCESSING`: A command is in-process but not finished.
-- `Payload::SUCCESS`: There was a generic success of some sort.
-- `Payload::UPDATED`: An update attempt succeeded.
-- `Payload::VALID`: User input was valid.
+- `PayloadStatus::ACCEPTED`: A command has been accepted for later processing.
+- `PayloadStatus::AUTHENTICATED`: An authentication attempt succeeded.
+- `PayloadStatus::AUTHORIZED`: An authorization request succeeded.
+- `PayloadStatus::CREATED`: A creation attempt succeeded.
+- `PayloadStatus::DELETED`: A deletion attempt succeeded.
+- `PayloadStatus::ERROR`: There was a major error of some sort.
+- `PayloadStatus::FAILURE`: There was a generic failure of some sort.
+- `PayloadStatus::FOUND`: A query successfullly returned results.
+- `PayloadStatus::NOT_ACCEPTED`: A command failed to be accepted.
+- `PayloadStatus::NOT_AUTHENTICATED`: The user is not authenticated.
+- `PayloadStatus::NOT_AUTHORIZED`: The user is not authorized for the action.
+- `PayloadStatus::NOT_CREATED`: A creation attempt failed.
+- `PayloadStatus::NOT_DELETED`: A deletion attempt failed.
+- `PayloadStatus::NOT_FOUND`: A query failed to return results.
+- `PayloadStatus::NOT_UPDATED`: An update attempt failed.
+- `PayloadStatus::NOT_VALID`: User input was invalid.
+- `PayloadStatus::PROCESSING`: A command is in-process but not finished.
+- `PayloadStatus::SUCCESS`: There was a generic success of some sort.
+- `PayloadStatus::UPDATED`: An update attempt succeeded.
+- `PayloadStatus::VALID`: User input was valid.
 
 Your user-interface layer can use these to determine how to process and present
 the domain objects retrieved via `Payload::getOutput()`.
@@ -108,7 +121,8 @@ present the information from the domain.
 <?php
 namespace App\Blog;
 
-use Aura\Payload\Payload;
+use Aura\Payload\PayloadFactory;
+use Aura\Payload_Interface\PayloadStatus;
 use Exception;
 
 class ApplicationService
@@ -116,33 +130,35 @@ class ApplicationService
     protected $user;
     protected $mapper;
     protected $filter;
-    protected $payload;
+    protected $payloadFactory;
 
     public function __construct(
         User $user,
         BlogMapper $mapper,
         BlogFilter $filter,
-        Payload $payload
+        PayloadFactory $payloadFactory
     ) {
         $this->user = $user;
         $this->mapper = $mapper;
         $this->filter = $filter;
-        $this->payload = $payload;
+        $this->payloadFactory = $payloadFactory;
     }
 
     public function browsePosts($page = 1, $perPage = 10)
     {
+        $payload = $this->payloadFactory->newInstance();
+
         try {
 
             $posts = $this->mapper->fetchAllByPage($page, $perPage);
             if (! $posts) {
-                return $this->payload
-                    ->setStatus(Payload::NOT_FOUND)
+                return $payload
+                    ->setStatus(PayloadStatus::NOT_FOUND)
                     ->setInput(func_get_args());
             }
 
-            return $this->payload
-                ->setStatus(Payload::FOUND)
+            return $payload
+                ->setStatus(PayloadStatus::FOUND)
                 ->setOutput($posts);
 
         } catch (Exception $e) {
@@ -152,17 +168,19 @@ class ApplicationService
 
     public function readPost($id)
     {
+        $payload = $this->payloadFactory->newInstance();
+
         try {
 
             $post = $this->mapper->fetchOneById($id);
             if (! $post) {
-                return $this->payload
-                    ->setStatus(Payload::NOT_FOUND)
+                return $payload
+                    ->setStatus(PayloadStatus::NOT_FOUND)
                     ->setInput(func_get_args());
             }
 
-            return $this->payload
-                ->setStatus(Payload::FOUND)
+            return $payload
+                ->setStatus(PayloadStatus::FOUND)
                 ->setOutput($post);
 
         } catch (Exception $e) {
@@ -172,33 +190,35 @@ class ApplicationService
 
     public function editPost($id, array $input)
     {
+        $payload = $this->payloadFactory->newInstance();
+
         try {
 
             $post = $this->mapper->fetchOneById($id);
             if (! $post) {
-                return $this->payload
-                    ->setStatus(Payload::NOT_FOUND)
+                return $payload
+                    ->setStatus(PayloadStatus::NOT_FOUND)
                     ->setInput(func_get_args());
             }
 
             if (! $post->isOwnedBy($user)) {
-                return $this->payload
-                    ->setStatus(Payload::NOT_AUTHORIZED)
+                return $payload
+                    ->setStatus(PayloadStatus::NOT_AUTHORIZED)
                     ->setInput(func_get_args());
             }
 
             $post->setData($input);
             if (! $this->filter->forUpdate($post)) {
-                return $this->payload
-                    ->setStatus(Payload::NOT_VALID)
+                return $payload
+                    ->setStatus(PayloadStatus::NOT_VALID)
                     ->setInput($input)
                     ->setOutput($post)
                     ->setMessages($this->filter->getMessages());
             }
 
             $this->mapper->update($post);
-            return $this->payload
-                ->setStatus(Payload::UPDATED)
+            return $payload
+                ->setStatus(PayloadStatus::UPDATED)
                 ->setOutput($post);
 
         } catch (Exception $e) {
@@ -208,20 +228,22 @@ class ApplicationService
 
     public function addPost(array $input)
     {
+        $payload = $this->payloadFactory->newInstance();
+
         try {
 
             $post = $this->mapper->newPost($input);
             if (! $this->filter->forInsert($post)) {
-                return $this->payload
-                    ->setStatus(Payload::NOT_VALID)
+                return $payload
+                    ->setStatus(PayloadStatus::NOT_VALID)
                     ->setInput($input)
                     ->setOutput($post)
                     ->setMessages($this->filter->getMessages());
             }
 
             $this->mapper->create($post);
-            return $this->payload
-                ->setStatus(Payload::CREATED)
+            return $payload
+                ->setStatus(PayloadStatus::CREATED)
                 ->setOutput($post);
 
         } catch (Exception $e) {
@@ -231,24 +253,26 @@ class ApplicationService
 
     public function deletePost($id)
     {
+        $payload = $this->payloadFactory->newInstance();
+
         try {
 
             $post = $this->mapper->fetchOneById($id);
             if (! $post) {
-                return $this->payload
-                    ->setStatus(Payload::NOT_FOUND)
+                return $payload
+                    ->setStatus(PayloadStatus::NOT_FOUND)
                     ->setInput(func_get_args());
             }
 
             if (! $post->isOwnedBy($user)) {
-                return $this->payload
-                    ->setStatus(Payload::NOT_AUTHORIZED)
+                return $payload
+                    ->setStatus(PayloadStatus::NOT_AUTHORIZED)
                     ->setInput(func_get_args());
             }
 
             $this->mapper->delete($post);
-            return $this->payload
-                ->setStatus(Payload::DELETED)
+            return $payload
+                ->setStatus(PayloadStatus::DELETED)
                 ->setOutput($post);
 
         } catch (Exception $e) {
@@ -258,8 +282,9 @@ class ApplicationService
 
     protected function error(Exception $e, array $args)
     {
-        return $this->payload
-            ->setStatus(Payload::ERROR)
+        $payload = $this->payloadFactory->newInstance();
+        return $payload
+            ->setStatus(PayloadStatus::ERROR)
             ->setInput($args)
             ->setOutput($e);
     }
