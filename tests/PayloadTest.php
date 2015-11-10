@@ -1,6 +1,8 @@
 <?php
 namespace Aura\Payload;
 
+use Aura\Payload_Interface\PayloadStatus;
+
 class PayloadTest extends \PHPUnit_Framework_TestCase
 {
     public function test()
@@ -8,13 +10,13 @@ class PayloadTest extends \PHPUnit_Framework_TestCase
         $payload = new Payload();
 
         $payload
-            ->setStatus($payload::SUCCESS)
+            ->setStatus(PayloadStatus::SUCCESS)
             ->setInput('input')
             ->setOutput('output')
             ->setMessages('messages')
             ->setExtras('extras');
 
-        $this->assertSame($payload::SUCCESS, $payload->getStatus());
+        $this->assertSame(PayloadStatus::SUCCESS, $payload->getStatus());
         $this->assertSame('input', $payload->getInput());
         $this->assertSame('output', $payload->getOutput());
         $this->assertSame('messages', $payload->getMessages());
