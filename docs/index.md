@@ -32,7 +32,6 @@ $payload = $payloadFactory->newInstance();
 ?>
 ```
 
-
 ## Methods
 
 Use these methods in your domain layer to modify the _Payload_. (All `set*()`
@@ -64,7 +63,8 @@ complements to the the `set*()` methods.
 
 ## Status Values
 
-Several status values are available as constants on the _Aura\Payload_Interface\PayloadStatus_ class:
+Several generic status values are available as constants on the
+_Aura\Payload_Interface\PayloadStatus_ class:
 
 - `PayloadStatus::ACCEPTED`: A command has been accepted for later processing.
 - `PayloadStatus::AUTHENTICATED`: An authentication attempt succeeded.
@@ -86,6 +86,8 @@ Several status values are available as constants on the _Aura\Payload_Interface\
 - `PayloadStatus::SUCCESS`: There was a generic success of some sort.
 - `PayloadStatus::UPDATED`: An update attempt succeeded.
 - `PayloadStatus::VALID`: User input was valid.
+
+You should consider creating your own domain-specific payload statuses as well.
 
 Your user-interface layer can use these to determine how to process and present
 the domain objects retrieved via `Payload::getOutput()`.
@@ -113,9 +115,9 @@ return its results. Note how:
 Any raised _Exception_ gets transformed into an `ERROR` payload, with the
 exception and the input that led to the problem.
 
-When your user interface code receives the _Payload_, it can examine the payload
-status and know exactly what happened in the domain layer, and determine how to
-present the information from the domain.
+When your user-interface code receives the _Payload_, it can examine the payload
+status to discover exactly what happened in the domain layer, then determine how
+to present the information from the domain.
 
 ```php
 <?php
