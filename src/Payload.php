@@ -48,7 +48,7 @@ class Payload implements PayloadInterface
 
     /**
      *
-     * Messages reproted by the domain.
+     * Messages reported by the domain.
      *
      * @var mixed
      *
