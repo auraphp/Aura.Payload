@@ -28,6 +28,5 @@
         "psr-4": {
             "Aura\\Payload\\": "tests/"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }
