@@ -164,7 +164,7 @@ class Payload implements PayloadInterface
      *
      * Gets the domain messages.
      *
-     * @param mixed
+     * @return mixed
      *
      */
     public function getMessages()
@@ -191,8 +191,8 @@ class Payload implements PayloadInterface
      *
      * Gets the arbitrary extra domain information.
      *
-     * @param mixed
-     *
+     * @return mixed
+     * 
      */
     public function getExtras()
     {
