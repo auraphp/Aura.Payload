@@ -1,1 +1,1 @@
-First stable release.
+Hygiene release: documentation fixes.
