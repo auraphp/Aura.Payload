@@ -48,4 +48,16 @@ class PayloadImmutableTest extends \PHPUnit_Framework_TestCase
         $payload = $payload->setInput('input');
         $this->assertNotSame($array, $payload->getStatus());
     }
+
+    public function testDoNotCloneNotCloneableObject()
+    {
+        $notCloneable = new ClassNotCloneableFixture();
+        $payload = new PayloadImmutable();
+
+        $payload = $payload->setStatus($notCloneable);
+        $this->assertSame($notCloneable, $payload->getStatus());
+
+        $payload = $payload->setInput('input');
+        $this->assertSame($notCloneable, $payload->getStatus());
+    }
 }

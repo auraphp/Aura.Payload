@@ -10,6 +10,7 @@
 namespace Aura\Payload;
 
 use Aura\Payload_Interface\PayloadInterface;
+use ReflectionClass;
 
 /**
  *
@@ -240,7 +241,7 @@ class PayloadImmutable implements PayloadInterface
             return $cloned;
         }
 
-        if (is_object($property)) {
+        if (is_object($property) && (new ReflectionClass($property))->isCloneable()) {
             return clone $property;
         }
 
