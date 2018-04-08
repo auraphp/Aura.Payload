@@ -21,7 +21,7 @@ class PayloadFactory
      *
      * Returns a new Payload object.
      *
-     * @return Aura\Payload\Payload
+     * @return Payload
      *
      */
     public function newInstance()
