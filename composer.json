@@ -28,5 +28,8 @@
         "psr-4": {
             "Aura\\Payload\\": "tests/"
         }
+    },
+    "require-dev": {
+        "yoast/phpunit-polyfills": "^1.0"
     }
 }
