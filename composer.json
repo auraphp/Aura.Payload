@@ -16,8 +16,8 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0",
-        "aura/payload-interface": "~3.0"
+        "php": "^5.5 || ^7.0 || ^8.0",
+        "aura/payload-interface": "^3.0"
     },
     "autoload": {
         "psr-4": {
