@@ -2,8 +2,9 @@
 namespace Aura\Payload;
 
 use Aura\Payload_Interface\PayloadStatus;
+use PHPUnit\Framework\TestCase;
 
-class PayloadTest extends \PHPUnit_Framework_TestCase
+class PayloadTest extends TestCase
 {
     public function test()
     {

@@ -1,7 +1,9 @@
 <?php
 namespace Aura\Payload;
 
-class PayloadFactoryTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class PayloadFactoryTest extends TestCase
 {
     public function test()
     {
