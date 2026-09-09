@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## 3.1.0 (unreleased)
+Each version heading below is a release tag of the same name, for example
+https://github.com/auraphp/Aura.Payload/releases/tag/3.0.1.
+
+## 3.1.0
 
 Housekeeping release; no changes to the library itself.
 
@@ -23,22 +26,23 @@ Housekeeping release; no changes to the library itself.
 - The README now states the PHP versions actually supported, and carries the
   GitHub Actions badge in place of the retired Travis CI one.
 
-Replaces `CHANGES.md`, which recorded only the most recent release. The
-entries below are reconstructed from the release tags.
+- Adds a Release workflow, and this change log in place of `CHANGES.md`,
+  which recorded only the most recent release. The entries from 3.0.1 down
+  are reconstructed from the release tags.
 
-## [3.0.1](https://github.com/auraphp/Aura.Payload/releases/tag/3.0.1) (2016-10-03)
+## 3.0.1 (2016-10-03)
 
 Hygiene release: documentation fixes.
 
-## [3.0.0](https://github.com/auraphp/Aura.Payload/releases/tag/3.0.0) (2015-12-01)
+## 3.0.0 (2015-12-01)
 
 First stable release.
 
-## [3.0.0-beta1](https://github.com/auraphp/Aura.Payload/releases/tag/3.0.0-beta1) (2015-11-10)
+## 3.0.0-beta1 (2015-11-10)
 
 This release removes the status codes implementation in favor of the
 interface-provided `PayloadStatus` class, and adds a `PayloadFactory` class.
 
-## [3.0.0-alpha1](https://github.com/auraphp/Aura.Payload/releases/tag/3.0.0-alpha1) (2015-05-18)
+## 3.0.0-alpha1 (2015-05-18)
 
 First 3.x alpha release.
