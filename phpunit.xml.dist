@@ -1,4 +1,10 @@
-<phpunit bootstrap="./phpunit.php">
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Deliberately minimal: this file has to parse on every PHPUnit from 4.8 to
+    12, so it carries nothing version specific. Code coverage is filtered from
+    the command line in the coverage job instead.
+-->
+<phpunit bootstrap="./phpunit.php" colors="true">
     <testsuites>
         <testsuite name="Aura.Payload test suite">
             <directory>./tests</directory>

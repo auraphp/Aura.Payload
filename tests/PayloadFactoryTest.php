@@ -1,7 +1,7 @@
 <?php
 namespace Aura\Payload;
 
-use PHPUnit\Framework\TestCase;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class PayloadFactoryTest extends TestCase
 {
