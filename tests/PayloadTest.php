@@ -2,7 +2,7 @@
 namespace Aura\Payload;
 
 use Aura\Payload_Interface\PayloadStatus;
-use PHPUnit\Framework\TestCase;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class PayloadTest extends TestCase
 {
